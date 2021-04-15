@@ -17,7 +17,8 @@ class Blockchain {
   }
 
   createGenesisBlock(): Block {
-    return new Block('01/01/2020', { username: 'umair' }, 0)
+    const newTransaction = new Transaction(null, '0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7', 10)
+    return new Block('01/01/2020', [newTransaction], 0)
   }
 
   getLatestBlock(): Block {
@@ -26,14 +27,17 @@ class Blockchain {
 
 
   minePendingTransactions(miningRewardAddress: WalletAddress) {
+    // mine a block with pending transactions but doesn't add it to chain yet 
     let block = new Block(Date.now(), this.pendingTransactions)
     block.mineBlock(this.difficulty)
+    // point to the previous block hash
+    block.previousHash = this.chain[this.chain.length - 1].hash
+
+    const miningRewardTransaction = new Transaction(null, miningRewardAddress, this.miningReward)
     this.chain.push(block)
 
-    this.pendingTransactions = [
-      // give rewards to miner as a transaction from the system
-      new Transaction(null, miningRewardAddress, this.miningReward)
-    ]
+    // reset transactions and give rewards to miner as a transaction from the system
+    this.pendingTransactions = [miningRewardTransaction]
   }
 
   createTransaction(transaction: Transaction): Transaction {
@@ -41,7 +45,7 @@ class Blockchain {
     return transaction
   }
 
-  getBalanceOfAddress(address: WalletAddress) {
+  getBalanceOfAddress(address: WalletAddress): number {
     let balance = 0
 
     this.chain.forEach((block: Block) => {
@@ -62,6 +66,8 @@ class Blockchain {
         }
       })
     })
+
+    return balance
   }
 
   isChainValid(): boolean {

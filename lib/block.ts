@@ -23,10 +23,13 @@ class Block {
   }
 
   mineBlock(difficulty: number): void | Block {
-    while (this.hash.substring(0, difficulty) !== Array(difficulty + 1).join("0")) {
+    const zerosRequired = Array(difficulty + 1).join("0")
+    // keep generating hashes until it has number of zeros required
+    while (this.hash.substring(0, difficulty) !== zerosRequired) {
       this.nonce++
       this.hash = this.calculateHash()
     }
+
   }
 }
 
