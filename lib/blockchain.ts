@@ -26,17 +26,22 @@ class Blockchain {
   }
 
 
+  /**
+  * Takes all the pending transactions, puts them in a Block and starts the
+  * mining process. It also adds a transaction to send the mining reward to
+  * the given address.
+  *
+  * @param {WalletAddress} miningRewardAddress
+  */
   minePendingTransactions(miningRewardAddress: WalletAddress) {
-    // mine a block with pending transactions but doesn't add it to chain yet 
     let block = new Block(Date.now(), this.pendingTransactions)
+
     block.mineBlock(this.difficulty)
-    // point to the previous block hash
     block.previousHash = this.chain[this.chain.length - 1].hash
 
     const miningRewardTransaction = new Transaction(null, miningRewardAddress, this.miningReward)
     this.chain.push(block)
 
-    // reset transactions and give rewards to miner as a transaction from the system
     this.pendingTransactions = [miningRewardTransaction]
   }
 
@@ -45,6 +50,12 @@ class Blockchain {
     return transaction
   }
 
+  /**
+   * Returns the balance of a given wallet address.
+   *
+   * @param {WalletAddress} address
+   * @returns {number} The balance of the wallet
+   */
   getBalanceOfAddress(address: WalletAddress): number {
     let balance = 0
 
