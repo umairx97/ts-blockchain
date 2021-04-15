@@ -1,5 +1,3 @@
-import Blockchain from './lib/blockchain'
-import Block from './lib/block'
 import { WalletAddress } from './utils/types'
 
 class Transaction {
