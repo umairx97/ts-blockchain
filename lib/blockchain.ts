@@ -37,7 +37,7 @@ class Blockchain {
     let block = new Block(Date.now(), this.pendingTransactions)
 
     block.mineBlock(this.difficulty)
-    block.previousHash = this.chain[this.chain.length - 1].hash
+    block.previousHash = this.getLatestBlock().hash
 
     const miningRewardTransaction = new Transaction(null, miningRewardAddress, this.miningReward)
     this.chain.push(block)
