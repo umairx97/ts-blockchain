@@ -6,7 +6,7 @@ class Blockchain {
 
   constructor() {
     this.chain = [this.createGenesisBlock()]
-    this.difficulty = 2
+    this.difficulty = 1
   }
 
   createGenesisBlock(): Block {
@@ -17,10 +17,11 @@ class Blockchain {
     return this.chain[this.chain.length - 1]
   }
 
-  addBlock(newBlock: Block): void {
+  addBlock(newBlock: Block): Block {
     newBlock.previousHash = this.getLatestBlock().hash
     newBlock.mineBlock(this.difficulty)
     this.chain.push(newBlock)
+    return newBlock
   }
 
   isChainValid(): boolean {

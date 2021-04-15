@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test tape tests/*.ts"
+    "test": "NODE_ENV=test ts-node node_modules/tape/bin/tape tests/**/*.ts"
   },
   "repository": {
     "type": "git",
