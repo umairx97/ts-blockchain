@@ -42,10 +42,21 @@ class Blockchain {
     const miningRewardTransaction = new Transaction(null, miningRewardAddress, this.miningReward)
     this.chain.push(block)
 
+    // add the mining reward transaction to be approved on next block creation
     this.pendingTransactions = [miningRewardTransaction]
   }
 
-  createTransaction(transaction: Transaction): Transaction {
+  addTransaction(transaction: Transaction): Transaction {
+
+    if (!transaction.fromAddress || !transaction.toAddress) {
+      throw new Error('Transaction must include from and to address')
+    }
+
+
+    if (!transaction.isValidTx()) {
+      throw new Error('Cannot add invalid transaction in block')
+    }
+
     this.pendingTransactions.push(transaction)
     return transaction
   }
@@ -91,6 +102,8 @@ class Blockchain {
 
     const currentBlock = block
     const previousBlock = this.chain[blockIndex - 1]
+
+    if (!currentBlock.hasValidTransactions) return false
 
     // Recalculate hash for integrity of data manipulation
     if (currentBlock.hash !== currentBlock.calculateHash()) return false

@@ -2,6 +2,7 @@ import tape from 'tape'
 import Blockchain from '../lib/blockchain'
 import Block from '../lib/block'
 import Transaction from '../lib/transaction'
+import { KeyPair } from '../lib/elliptic'
 
 const nodeCoin = new Blockchain()
 
@@ -16,17 +17,21 @@ tape('initial blockchain params', t => {
 
 tape('create new block with a transaction', t => {
   const amount = 10
-
-  const fromAddress = '0x0472ec0185ebb8202f3d4ddb0226998889663cf2'
+  const myKey = KeyPair.keyFromPrivate('e8da4ce84c5711abf5b3e086c0cf0686375d3985dafbd8d1573501373d90c1f0')
+  const myWalletAddress = myKey.getPublic('hex')
   const toAddress = '0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7'
   const rewardAddress = toAddress
 
-  const newTransaction = nodeCoin.createTransaction(new Transaction(fromAddress, toAddress, amount))
+  const trx = new Transaction(myWalletAddress, toAddress, amount)
+  trx.signTrx(myKey)
+
+  const newTransaction = nodeCoin.addTransaction(trx)
+
   nodeCoin.minePendingTransactions(rewardAddress)
 
   t.true(nodeCoin.chain[1].hash, 'should generate a unique hash')
   t.equal(nodeCoin.chain.length, 2, 'Should include the new blocks')
-  t.deepEqual(newTransaction.fromAddress, fromAddress, 'should not tamper with transaction data')
+  t.deepEqual(newTransaction.fromAddress, myWalletAddress, 'should not tamper with transaction data')
   t.deepEqual(newTransaction.toAddress, toAddress, 'should not tamper with transaction data')
   t.deepEqual(newTransaction.amount, amount, 'should not tamper with transaction data')
   t.equal(nodeCoin.chain[1].previousHash, nodeCoin.chain[0].hash, 'should refer to previous block hash')

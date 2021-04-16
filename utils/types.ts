@@ -1,1 +1,1 @@
-export type WalletAddress = `0x${number}${string}`
+export type WalletAddress = `0x${number}${string}` | any

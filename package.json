@@ -18,12 +18,15 @@
   },
   "homepage": "https://github.com/umairx97/ts-blockchain#readme",
   "devDependencies": {
+    "@types/crypto-js": "^4.0.1",
+    "@types/elliptic": "^6.4.12",
     "@types/lodash": "^4.14.168",
     "@types/node": "^14.14.39",
     "@types/tape": "^4.13.0"
   },
   "dependencies": {
     "crypto-js": "^4.0.0",
+    "elliptic": "^6.5.4",
     "lodash": "^4.17.21",
     "tape": "^5.2.2",
     "ts-node": "^9.1.1",

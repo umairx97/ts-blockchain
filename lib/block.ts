@@ -1,14 +1,15 @@
-const SHA256 = require('crypto-js').SHA256
+import { SHA256 } from 'crypto-js'
+import Transaction from './transaction'
 
 class Block {
   timestamp: string | number
-  transactions: any
+  transactions: Array<Transaction>
   previousHash: string | any
   hash: string
   nonce: number
 
 
-  constructor(timestamp: string | number, transactions: any, previousHash: string | any = '') {
+  constructor(timestamp: string | number, transactions: Array<Transaction>, previousHash: string | any = '') {
 
     this.timestamp = timestamp
     this.transactions = transactions
@@ -42,6 +43,10 @@ class Block {
       this.hash = this.calculateHash()
     }
 
+  }
+
+  hasValidTransactions(): boolean {
+    return this.transactions.every((trx: Transaction) => trx.isValidTx())
   }
 }
 
