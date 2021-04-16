@@ -1,7 +1,7 @@
 import { WalletAddress } from '../utils/types'
 import Block from './block'
 import Transaction from './transaction'
-import _ from 'lodash'
+import _, { add } from 'lodash'
 
 class Blockchain {
   chain: Array<Block>
@@ -16,11 +16,22 @@ class Blockchain {
     this.miningReward = 100
   }
 
+  /**
+   * creates the genesis block manually and a 
+   * transaction is included in it as well
+   * 
+   * @returns {Block}
+   */
   createGenesisBlock(): Block {
     const newTransaction = new Transaction(null, '0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7', 10)
     return new Block('01/01/2020', [newTransaction], 0)
   }
 
+  /**
+   * gets the latest block on the chain, the last block mined
+   * 
+   * @returns {Block}
+   */
   getLatestBlock(): Block {
     return this.chain[this.chain.length - 1]
   }
@@ -46,6 +57,12 @@ class Blockchain {
     this.pendingTransactions = [miningRewardTransaction]
   }
 
+  /**
+   * Validates and adds the transaction in the block
+   * 
+   * @param {Transaction} - new transaction in the block 
+   * @returns {Transaction} - newly added transaction 
+   */
   addTransaction(transaction: Transaction): Transaction {
 
     if (!transaction.fromAddress || !transaction.toAddress) {
@@ -92,6 +109,12 @@ class Blockchain {
     return balance
   }
 
+  /**
+   * checks every block on the chain and all of the 
+   * transactions within each block
+   * 
+   * @returns {boolean}
+   */
   isChainValid(): boolean {
     return this.chain.every(this.checkBlockValidity)
   }
@@ -111,6 +134,28 @@ class Blockchain {
     if (currentBlock.previousHash !== previousBlock.hash) return false
 
     return true
+  }
+  
+  /**
+   * Returns a list of all transactions that happened
+   * to and from the given wallet address.
+   *
+   * @param  {string} address
+   * @returns {Transaction[]}
+   */
+   getAllTransactionsForAddress (address: WalletAddress): Array<Transaction> {
+    const transactions: Array<Transaction> = []
+
+    this.chain.forEach((block: Block) => {
+      block.transactions.forEach((tx: Transaction) => {
+        // collect any transaction that had the one of the addresses associated
+        if(tx.fromAddress === address || tx.toAddress === address) {
+          transactions.push(tx)
+        }
+      })
+    })
+
+    return transactions
   }
 }
 

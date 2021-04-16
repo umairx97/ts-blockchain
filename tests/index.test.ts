@@ -52,3 +52,13 @@ tape('getBalanceOfAddress should get the correct balance by checking inputs and 
   t.equal(balance, 120)
   t.end()
 })
+
+
+tape('getBalanceOfAddress should get the correct balance by checking inputs and outputs', t => {
+  const toAddress = '0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7'
+  const transactions = nodeCoin.getAllTransactionsForAddress(toAddress)
+  
+  const isOfTransactionType = transactions.every(tx => tx instanceof Transaction)
+  t.equal(isOfTransactionType, true, 'every transaction should be of type')
+  t.end()
+})
