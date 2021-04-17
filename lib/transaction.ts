@@ -16,8 +16,8 @@ class Transaction {
   }
 
   /**
-   * Calculates the transaction hash includes fromAddress
-   * toAddress and amount as inputs
+   * Calculates the transaction hash includes **fromAddress**
+   * **toAddress** and **amount** as inputs
    * 
    * @returns {string}
    */
