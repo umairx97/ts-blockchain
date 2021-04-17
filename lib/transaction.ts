@@ -15,10 +15,23 @@ class Transaction {
     this.signature = ''
   }
 
+  /**
+   * Calculates the transaction hash includes fromAddress
+   * toAddress and amount as inputs
+   * 
+   * @returns {string}
+   */
   calculateTxHash(): string {
     return SHA256(this.fromAddress + this.toAddress + this.amount).toString()
   }
 
+  /**
+   * Signs the transaction with wallet keyPair, 
+   * you can only sign transactions for your own wallets 
+   * only 
+   * 
+   * @param {ec.KeyPair} signingKey 
+   */
   signTrx(signingKey: ec.KeyPair): void {
     if (signingKey.getPublic('hex') !== this.fromAddress) {
       throw new Error('You cannot sign transactions for other wallets')
@@ -30,6 +43,13 @@ class Transaction {
   }
 
 
+  /**
+   * Validates a transaction, checks if fromAddress is 
+   * null then the transaction was initiated via system 
+   * and checks signature
+   * 
+   * @returns {boolean}
+   */
   isValidTx(): boolean {
     if (this.fromAddress === null) return true
 
