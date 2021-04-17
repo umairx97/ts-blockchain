@@ -89,7 +89,7 @@ class Blockchain {
     this.chain.forEach((block: Block) => {
       /* 
       goes over every block and then every transaction in that block to
-      collect inputs, outputs and determing the balance of address
+      collect inputs, outputs and determine the balance of address
       */
       block.transactions.forEach((trx: Transaction) => {
 
