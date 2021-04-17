@@ -45,6 +45,11 @@ class Block {
 
   }
 
+  /**
+   * checks every transaction in a block and validates them 
+   * 
+   * @returns {boolean}
+   */
   hasValidTransactions(): boolean {
     return this.transactions.every((trx: Transaction) => trx.isValidTx())
   }

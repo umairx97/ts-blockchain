@@ -24,7 +24,7 @@ class Blockchain {
    */
   createGenesisBlock(): Block {
     const newTransaction = new Transaction(null, '0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7', 10)
-    return new Block('01/01/2020', [newTransaction], 0)
+    return new Block('02/08/1997', [newTransaction], 0)
   }
 
   /**
@@ -45,10 +45,9 @@ class Blockchain {
   * @param {WalletAddress} miningRewardAddress
   */
   minePendingTransactions(miningRewardAddress: WalletAddress) {
-    let block = new Block(Date.now(), this.pendingTransactions)
+    let block = new Block(Date.now(), this.pendingTransactions, this.getLatestBlock().hash)
 
     block.mineBlock(this.difficulty)
-    block.previousHash = this.getLatestBlock().hash
 
     const miningRewardTransaction = new Transaction(null, miningRewardAddress, this.miningReward)
     this.chain.push(block)
@@ -119,14 +118,22 @@ class Blockchain {
     return this.chain.every(this.checkBlockValidity)
   }
 
-  checkBlockValidity(block: Block, blockIndex: number): boolean {
+  /**
+   * Validates a single block, checks for valid transactions 
+   * previous hash link and current hash for data integrity 
+   * 
+   * @param {Block} - to check validity for  
+   * @param {number} - height of block
+   * @returns {boolean}
+   */
+  checkBlockValidity(block: Block, blockIndex: number, chain: Array<Block>): boolean {
     // do not include the genesis block in validation
     if (blockIndex === 0) return true
 
     const currentBlock = block
-    const previousBlock = this.chain[blockIndex - 1]
+    const previousBlock = chain[blockIndex - 1]
 
-    if (!currentBlock.hasValidTransactions) return false
+    if (!currentBlock.hasValidTransactions()) return false
 
     // Recalculate hash for integrity of data manipulation
     if (currentBlock.hash !== currentBlock.calculateHash()) return false
@@ -135,7 +142,7 @@ class Blockchain {
 
     return true
   }
-  
+
   /**
    * Returns a list of all transactions that happened
    * to and from the given wallet address.
@@ -143,13 +150,13 @@ class Blockchain {
    * @param  {string} address
    * @returns {Transaction[]}
    */
-   getAllTransactionsForAddress (address: WalletAddress): Array<Transaction> {
+  getAllTransactionsForAddress(address: WalletAddress): Array<Transaction> {
     const transactions: Array<Transaction> = []
 
     this.chain.forEach((block: Block) => {
       block.transactions.forEach((tx: Transaction) => {
         // collect any transaction that had the one of the addresses associated
-        if(tx.fromAddress === address || tx.toAddress === address) {
+        if (tx.fromAddress === address || tx.toAddress === address) {
           transactions.push(tx)
         }
       })

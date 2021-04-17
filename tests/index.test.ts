@@ -6,12 +6,26 @@ import { KeyPair } from '../lib/elliptic'
 
 const nodeCoin = new Blockchain()
 
+tape('isChainValid should return true after transactions and block additions', t => {
+  let isChainValid = nodeCoin.isChainValid()
+
+  t.equal(isChainValid, true)
+  t.end()
+})
+
 tape('initial blockchain params', t => {
   const expectedDifficulty = 1
 
   t.equal(nodeCoin.difficulty, expectedDifficulty)
   t.equal(nodeCoin.chain.length, 1, 'Should only have genesis block on new blockchain start')
   t.true(nodeCoin.chain[0] instanceof Block, 'Genesis block should be of expected type')
+  t.end()
+})
+
+tape('isChainValid should return true after transactions and block additions', t => {
+  let isChainValid = nodeCoin.isChainValid()
+
+  t.equal(isChainValid, true)
   t.end()
 })
 
@@ -39,6 +53,13 @@ tape('create new block with a transaction', t => {
   t.end()
 })
 
+tape('isChainValid should return true after transactions and block additions', t => {
+  let isChainValid = nodeCoin.isChainValid()
+
+  t.equal(isChainValid, true)
+  t.end()
+})
+
 tape('getBalanceOfAddress should get the correct balance by checking inputs and outputs', t => {
   const toAddress = '0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7'
 
@@ -53,6 +74,12 @@ tape('getBalanceOfAddress should get the correct balance by checking inputs and 
   t.end()
 })
 
+tape('isChainValid should return true after transactions and block additions', t => {
+  let isChainValid = nodeCoin.isChainValid()
+
+  t.equal(isChainValid, true)
+  t.end()
+})
 
 tape('getAllTransactionsForAddress should get all the transactions for a wallet address', t => {
   const toAddress = '0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7'
@@ -60,5 +87,35 @@ tape('getAllTransactionsForAddress should get all the transactions for a wallet 
 
   const isOfTransactionType = transactions.every(tx => tx instanceof Transaction)
   t.equal(isOfTransactionType, true, 'every transaction should be of type')
+  t.end()
+})
+
+tape('isChainValid should return true after transactions and block additions', t => {
+  let isChainValid = nodeCoin.isChainValid()
+
+  t.equal(isChainValid, true)
+  t.end()
+})
+
+tape('hasValidTransactions should validate all transactions within a block', t => {
+  const [genesisBlock, block] = nodeCoin.chain
+
+  t.equal(genesisBlock.hasValidTransactions(), true, 'block should not contain any invalid transactions')
+  t.equal(block.hasValidTransactions(), true, 'block should not contain any invalid transactions')
+  t.end()
+})
+
+tape('isChainValid should return true after transactions and block additions', t => {
+  let isChainValid = nodeCoin.isChainValid()
+
+  t.equal(isChainValid, true)
+  t.end()
+})
+
+tape('getLatestBlock should return the last block in chain', t => {
+  const latestBlock = nodeCoin.getLatestBlock()
+  const lastIndexOfBlock = nodeCoin.chain.lastIndexOf(latestBlock)
+
+  t.equal(lastIndexOfBlock, 2)
   t.end()
 })
