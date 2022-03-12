@@ -98,7 +98,7 @@ class Blockchain {
           balance -= trx.amount
         }
 
-        // incoming transaction will decrease the balance
+        // incoming transaction will increase the balance
         if (trx.toAddress === address) {
           balance += trx.amount
         }
